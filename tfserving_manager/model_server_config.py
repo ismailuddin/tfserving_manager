@@ -3,10 +3,10 @@ from typing import List
 from tensorflow_serving.config import model_server_config_pb2
 from tensorflow_serving.config.model_server_config_pb2 import ModelServerConfig
 from google.protobuf import text_format, json_format
-from model_server.exceptions import ModelConfigError
+from tfserving_manager.exceptions import ModelConfigError
 
 
-class TensorFlowServingModelConfig:
+class TFServingModelServerConfig:
     """Parse TensorFlow Serving model configuration protobuf messages. Add
     or remove models from the message.
     """
@@ -29,6 +29,7 @@ class TensorFlowServingModelConfig:
         self._models: List[dict] = self.config["modelConfigList"]["config"]
 
     def initialise_blank_config(self):
+        """Initialises the class instance with a blank model configuration"""
         message = model_server_config_pb2.ModelServerConfig(
             model_config_list=model_server_config_pb2.ModelConfigList(
                 config=[]
@@ -48,6 +49,16 @@ class TensorFlowServingModelConfig:
         return self._models
 
     def remove_model(self, model_name: str):
+        """Removes the specified model from the model config
+
+        Args:
+            model_name (str): Model name to remove
+
+        Raises:
+            ModelConfigError: Raised if the class instance has not been
+                initialised with a blank configuration or from a file
+            ModelConfigError: Raised if the specified model does not exist
+        """
         if self.config is None:
             raise ModelConfigError("No model config file initialised.")
         model_names = [m["name"] for m in self._models]

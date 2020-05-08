@@ -1,0 +1,5 @@
+tensorflow
+tensorflow-serving-api
+grpc
+numpy
+requests
