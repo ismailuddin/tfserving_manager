@@ -1,5 +1,4 @@
-models/build/*
-!models/build/.gitkeep
+models/build/*/*
 models/src/*.h5
 # Byte-compiled / optimized / DLL files
 __pycache__/
