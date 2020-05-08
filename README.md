@@ -15,4 +15,9 @@ Refer to the notebooks for examples of how to use the package.
 Functions are provided to interact with both the RESTful API endpoints, as well as the gRPC API endpoints.
 
 ## Documentation
-Documentation can be built using the `Makefile`. First, run `make html` inside the `docs/` directory. Then, launch a server inside `docs/build/html` using the command `python -m http.server`.
+Source files can be generated using the command:
+```shell
+$   sphinx-apidoc -o source ../tfserving_manager
+```
+
+Documentation can then be built using the `Makefile`. First, run `make html` inside the `docs/` directory. Then, launch a server inside `docs/build/html` using the command `python -m http.server`.
