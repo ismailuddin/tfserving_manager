@@ -3,3 +3,4 @@ tensorflow-serving-api
 grpc
 numpy
 requests
+pytest
