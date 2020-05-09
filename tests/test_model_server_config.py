@@ -1,8 +1,8 @@
 from unittest import TestCase
 import tempfile
 from tensorflow_serving.config import model_server_config_pb2
-from model_server.model_server_config import TensorFlowServingModelConfig
-from model_server.exceptions import ModelConfigError
+from tfserving_manager.model_server_config import TFServingModelServerConfig
+from tfserving_manager.exceptions import ModelConfigError
 
 
 class TestTensorFlowServingModelConfig(TestCase):
@@ -24,7 +24,7 @@ class TestTensorFlowServingModelConfig(TestCase):
         cls.model_config_file = tempfile.NamedTemporaryFile()
         with open(cls.model_config_file.name, "w") as file:
             file.write(str(model_config))
-        cls.t = TensorFlowServingModelConfig()
+        cls.t = TFServingModelServerConfig()
 
     def tearDown(cls):
         cls.model_config_file.close()
@@ -86,5 +86,5 @@ class TestTensorFlowServingModelConfig(TestCase):
         with tempfile.NamedTemporaryFile() as file:
             self.t.save_protobuf(file.name)
             # Test generated Protobuf is valid
-            t = TensorFlowServingModelConfig()
+            t = TFServingModelServerConfig()
             t.parse_config_file(filepath=file.name)

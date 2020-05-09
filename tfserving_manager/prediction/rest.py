@@ -25,8 +25,13 @@ class RESTAPIPrediction:
         Args:
             model_name (str): Model name
             model_version (int): Version of model
-            inputs (np.ndarray): Input as a NumPy array, exluding dimension for
-                batch support
+            inputs (List[List[float]]): Inputs to the model, in the correct
+                shape expected by the model, but as a Python list. This is
+                typically the equivalent of a NumPy array of shape for example
+                of (1, 224, 224, 3), where 1 is the number of images and each
+                image is of shape (224, 224, 3). Use NumPy's `.tolist()` to
+                convert each array into a list, and place inside another Python
+                list to achieve the correct dimensionality.
 
         Returns:
             np.ndarray: Predictions from model
@@ -35,7 +40,7 @@ class RESTAPIPrediction:
             f"{self.url}/v{model_version}/models/{model_name}:predict",
             json={
                 "signature_name": "serving_default",
-                "instances": [inputs.tolist()],
+                "instances": inputs,
             },
             headers={"Content-Type": "application/json"}
         )

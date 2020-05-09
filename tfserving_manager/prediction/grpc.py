@@ -30,6 +30,7 @@ class GRPCPredictionAPI:
         input_layer_name: str,
         output_layer_name: str,
         input_shape: Tuple[int],
+        output_shape: Tuple[int] = None
     ) -> np.ndarray:
         """Get predictions from TensorFlow Serving server, from the specified
         model, version and input.
@@ -37,12 +38,17 @@ class GRPCPredictionAPI:
         Args:
             model_name (str): Model name
             model_version (int): Version of model
-            inputs (np.ndarray): Input as a NumPy array, exluding dimension for
-                batch support
+            inputs (np.ndarray): Input as a NumPy array, in the correct shape
+                as expected by the model. This may require an extra axis for
+                number of instances of the input e.g. (1, 224, 224, 3)
             input_layer_name (str): Input layer name in model
             output_layer_name (str): Output layer in model
-            input_shape (Tuple[int]): Shape of the input, with an extra first
-                dimension e.g. (1, 224, 224, 3)
+            input_shape (Tuple[int]): Shape of the input. Depending on the
+                model, an extra first axis may be required which encodes
+                the number of instances of the input e.g. (1, 224, 224, 3)
+            output_shape (Tuple[int]): Shape of the model output, where
+                typically the first axis is the number of instances of the
+                input provided.
 
         Returns:
             np.ndarray: Predictions from model
@@ -52,8 +58,8 @@ class GRPCPredictionAPI:
         request.model_spec.signature_name = "serving_default"
         request.inputs[input_layer_name].CopyFrom(
             tf.make_tensor_proto(
-                inputs[np.newaxis].astype(np.float32), shape=input_shape
+                inputs.astype(np.float32), shape=input_shape
             )
         )
         result = self.stub.Predict(request)
-        return np.array(result.outputs[output_layer_name].float_val)
+        return np.array(result.outputs[output_layer_name].float_val).reshape(output_shape)
